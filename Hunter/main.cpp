@@ -13,13 +13,15 @@ int main(int, char const**)
     double X2 = 0;
     double Y2 = 0;
     double a2 = 0, b2 = 0, c2 = 0, d2 = 0;
-    int x1 = 10;
+    int x1 = 100;
     int x2 = 10;
-    RenderWindow window(VideoMode(2000, 1000), "OXOTHNK");
+    RenderWindow window(VideoMode(2000, 1000), "SLOH N MYXA");
     CircleShape oxotnik(20.f);
-    CircleShape dobocha1(20.f);
-    CircleShape dobocha2(20.f);
+    CircleShape dobocha1(200.f);
+    CircleShape dobocha2(2.f);
     CircleShape pula(10.f, 5);
+    CircleShape strelka(90.f, 3);
+    strelka.setPosition(825, 600);
     dobocha1.setFillColor(Color::Cyan);
     dobocha2.setFillColor(Color::Cyan);
     oxotnik.setPosition(50, rand() % 1000);
@@ -31,6 +33,21 @@ int main(int, char const**)
     d2 = dobocha2.getPosition().y;
     pula.setPosition(oxotnik.getPosition().x, oxotnik.getPosition().y);
     int xp = -10;
+    
+    // Create a graphical text to display
+    sf::Font font;
+    if (!font.loadFromFile(resourcePath() + "sansation.ttf")) {
+        return EXIT_FAILURE;
+    }
+    Text text1("", font, 50);
+    text1.setFillColor(Color::Green);
+    text1.setPosition(c, d - 60);
+    Text text2("", font, 50);
+    text2.setFillColor(Color::Green);
+    text2.setPosition(c2, d2 - 60);
+    Text text3("TA-DA!", font, 500);
+    text3.setFillColor(Color::Black);
+    text3.setPosition(-1000, -1000);
     while (window.isOpen())
     {
         Event event;
@@ -93,6 +110,10 @@ int main(int, char const**)
             i = false;
             dobocha2.setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
         }
+        text1.setString(std::to_string(x1));
+        text2.setString(std::to_string(x2));
+        text1.setPosition(c, d - 60);
+        text2.setPosition(c2, d2 - 60);
         if (rand() % 10000 == 5) {
             dobocha1.setPosition(rand() % 2000, rand() % 1000);
         }
@@ -172,13 +193,26 @@ int main(int, char const**)
         }
         if (x1 > 0) {
             window.draw(dobocha1);
+            window.draw(text1);
+        } else {
+            dobocha1.setPosition(-100, -100);
         }
         if (x2 > 0) {
             window.draw(dobocha2);
+            window.draw(text2);
+        } else {
+            dobocha2.setPosition(-100, -100);
         }
         if (x1 <= 0 && x2 <= 0) {
-            window.close();
+            text3.setPosition(100, 50);
+            window.draw(strelka);
         }
+        if (x1 <= 0 && x2 <= 0 && pula.getGlobalBounds().intersects(text3.getGlobalBounds())) {
+            in = false;
+            i = false;
+            text3.setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
+        }
+        window.draw(text3);
         window.display();
     }
     return EXIT_SUCCESS;
