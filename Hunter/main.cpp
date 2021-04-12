@@ -6,9 +6,7 @@ struct slon{
     CircleShape dobocha1;
     double X, Y, a, b, c, d;
     int XP;
-    bool dead;
     int x1;
-    
     slon(){
         dobocha1.setRadius(200.f);
         X = 0;
@@ -18,26 +16,25 @@ struct slon{
         c = 0;
         d = 0;
         XP = 10;
-        dead = false;
         x1 = 100;
     }
     
     void muve(){
-        if (c != a && dead == false) {
+        if (c != a) {
             c += X;
-        } else if (dead == false) {
+        } else {
             X = 0;
         }
-        if (d != b && dead == false) {
+        if (d != b) {
             d += Y;
-        } else if (dead == false) {
+        } else {
             Y = 0;
         }
-        if (((X < 0 && c < a) || (X > 0 && c > a)) && dead == false){
+        if (((X < 0 && c < a) || (X > 0 && c > a))){
             c = a;
             X = 0;
         }
-        if (((Y < 0 && d < b) || (Y > 0 && d > b)) && dead == false){
+        if (((Y < 0 && d < b) || (Y > 0 && d > b))){
             d = b;
             Y = 0;
         }
@@ -103,23 +100,36 @@ struct pul{
         }
     }
 };
+struct toxt{
+    int sizeText;
+    int x;
+    int y;
+    std::string texttext;
+    Text text;
+    toxt(){
+        sizeText = 50;
+        x = 0;
+        y = 0;
+        texttext = " ";
+        text.setString(texttext);
+        text.setPosition(x, y);
+        text.setCharacterSize(sizeText);
+    }
+};
 int man()
 {
     Color arr[] {Color::Red, Color::Yellow, Color::Green, Color::Green, Color::Magenta};
     bool pr = true;
     bool paus = true;
+    bool dead = false;
     RenderWindow window(VideoMode(2000, 1000), "SLOH N CHIT");
     window.clear(Color(250, 220, 100));
-    CircleShape str(50.f, 3);
-    RectangleShape str1(Vector2f(10.f, 100.f));
-    RectangleShape str2(Vector2f(10.f, 100.f));
     CircleShape oxotnik(20.f);
     CircleShape dobocha2(300.f);
     slon slon;
     hit hit;
     pul pula;
     CircleShape strelka(90.f, 3);
-    RectangleShape pause (Vector2f(100.f, 100.f));
     strelka.setPosition(725, 500);
     slon.dobocha1.setFillColor(Color::Cyan);
     dobocha2.setFillColor(Color(255, 255, 255, 128));
@@ -130,10 +140,35 @@ int man()
     slon.d = slon.dobocha1.getPosition().y;
     pula.pula.setPosition(oxotnik.getPosition().x, oxotnik.getPosition().y);
     sf::Font font;
-    str.rotate(90.0);
     if (!font.loadFromFile(resourcePath() + "sansation.ttf")) {
         return EXIT_FAILURE;
     }
+    
+    sf::Texture playButton;
+    if (!playButton.loadFromFile(resourcePath() + "pause-button.png")) {
+        return EXIT_FAILURE;
+    }
+    sf::Sprite play(playButton);
+    play.setScale(sf::Vector2f(0.1f, 0.1f));
+    play.setPosition(0, 0);
+    
+    sf::Texture Restart;
+    if (!Restart.loadFromFile(resourcePath() + "anticlockwise-rotation.png")) {
+        return EXIT_FAILURE;
+    }
+    sf::Sprite restart(Restart);
+    
+    restart.setScale(sf::Vector2f(0.1f, 0.1f));
+    restart.setPosition(restart.getPosition().x + 100, restart.getPosition().y);
+    
+    sf::Texture pauseButton;
+    if (!pauseButton.loadFromFile(resourcePath() + "play-button.png")) {
+        return EXIT_FAILURE;
+    }
+    sf::Sprite start(pauseButton);
+    start.setScale(sf::Vector2f(0.1f, 0.1f));
+    start.setPosition(0, 0);
+    
     Text text1("", font, 50);
     text1.setFillColor(Color::Green);
     text1.setPosition(slon.c, slon.d - 60);
@@ -146,7 +181,7 @@ int man()
     Text text4("YOU DEAD", font, 300);
     text4.setFillColor(Color::Black);
     text4.setPosition(-1000, -1000);
-    Text pravila("PROBEL = STRELBA, w a s d = DVIZEHNE, p = OTRAZENIE PULI, SHACHALA YBEITE CHIT, POTOM CLONA", font, 30);
+    Text pravila("Пробел = серельба, w a s d = движение, p = отражение пули, сначала убейте шит потом слона", font, 30);
     pravila.setFillColor(Color::Red);
     pravila.setPosition(0, 200);
     while (window.isOpen())
@@ -160,9 +195,40 @@ int man()
                 window.close();
             }
             if (Mouse::isButtonPressed(Mouse::Left)){
-              if (IntRect(0, 0, 100, 100).contains(Mouse::getPosition(window))) {
-                  paus = !paus;
-              }
+                if (IntRect(0, 0, 100, 100).contains(Mouse::getPosition(window))) {
+                    paus = !paus;
+                }
+            }
+            if (Mouse::isButtonPressed(Mouse::Left)){
+                if (IntRect(100, 0, 100, 100).contains(Mouse::getPosition(window))) {
+                    paus = true, pr = true;
+                    dead = false;
+                    slon.X = 0;
+                    slon.Y = 0;
+                    slon.a = 0;
+                    slon.b = 0;
+                    slon.c = 0;
+                    slon.d = 0;
+                    slon.XP = 10;
+                    slon.x1 = 100;
+                    pula.i = false;
+                    pula.i2 = false;
+                    pula.in = false;
+                    pula.xp = -10;
+                    hit.c2 = 0, hit.d2 = 0;
+                    hit.x2 = 10;
+                    strelka.setPosition(725, 500);
+                    slon.dobocha1.setFillColor(Color::Cyan);
+                    dobocha2.setFillColor(Color(255, 255, 255, 128));
+                    oxotnik.setPosition(50, rand() % 1000);
+                    slon.dobocha1.setPosition(rand() % 2000, rand() % 1000);
+                    slon.dobocha1.setPosition(slon.dobocha1.getPosition().x - 90, slon.dobocha1.getPosition().y - 90);
+                    slon.c = slon.dobocha1.getPosition().x;
+                    slon.d = slon.dobocha1.getPosition().y;
+                    pula.pula.setPosition(oxotnik.getPosition().x, oxotnik.getPosition().y);
+                    text3.setPosition(-1000, -1000);
+                    text4.setPosition(-1000, -1000);text4.setPosition(-1000, -1000);
+                }
             }
             if (paus) {
                 if (event.type == Event::KeyPressed && (event.key.code == Keyboard::E || event.key.code == Keyboard::Space)){
@@ -203,13 +269,12 @@ int man()
                 }
             }
         }
-        str2.setPosition(str1.getPosition().x + 30, str1.getPosition().y);
         if (paus) {
-            str.setPosition(90, -5);
-            str1.setPosition(-9090, -985);
+            play.setPosition(0, 0);
+            start.setPosition(-9090, -985);
         } else {
-            str.setPosition(-9090, -985);
-            str1.setPosition(25, -5);
+            play.setPosition(-9090, -985);
+            start.setPosition(0, 0);
         }
         slon.c = slon.dobocha1.getPosition().x;
         slon.d = slon.dobocha1.getPosition().y;
@@ -247,7 +312,9 @@ int man()
             dobocha2.setPosition(-10000, -10000);
             pula.i = false;
             pula.i2 = false;
-            slon.dead = true;
+            dead = true;
+            text4.setPosition(100, 50);
+            text4.setFillColor(Color::Yellow);
         }
         text1.setString(std::to_string(slon.x1));
         text2.setString(std::to_string(hit.x2));
@@ -286,7 +353,7 @@ int man()
             pula.i = false;
             text3.setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
         }
-        if (slon.dead) {
+        if (dead) {
             text4.setPosition(100, 50);
             text4.setFillColor(Color::Yellow);
         }
@@ -295,11 +362,9 @@ int man()
         }
         window.draw(text3);
         window.draw(text4);
-        pause.setFillColor(Color(128, 256, 0));
-        window.draw(pause);
-        window.draw(str);
-        window.draw(str1);
-        window.draw(str2);
+        window.draw(play);
+        window.draw(start);
+        window.draw(restart);
         window.display();
     }
 }
