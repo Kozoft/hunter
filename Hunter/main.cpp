@@ -140,7 +140,7 @@ int man()
     slon.d = slon.dobocha1.getPosition().y;
     pula.pula.setPosition(oxotnik.getPosition().x, oxotnik.getPosition().y);
     sf::Font font;
-    if (!font.loadFromFile(resourcePath() + "sansation.ttf")) {
+    if (!font.loadFromFile(resourcePath() + "Sansation_Light_Light.ttf")) {
         return EXIT_FAILURE;
     }
     
@@ -181,7 +181,7 @@ int man()
     Text text4("YOU DEAD", font, 300);
     text4.setFillColor(Color::Black);
     text4.setPosition(-1000, -1000);
-    Text pravila("Пробел = серельба, w a s d = движение, p = отражение пули, сначала убейте шит потом слона", font, 30);
+    Text pravila("probel = ctrelba, w a s d = dvigenie, p = otragenie puli, snachala ubeite chit potom clona", font, 30);
     pravila.setFillColor(Color::Red);
     pravila.setPosition(0, 200);
     while (window.isOpen())
@@ -365,7 +365,7 @@ int man()
         window.draw(play);
         window.draw(start);
         window.draw(restart);
-        window.display();
+        window.display();   
     }
 }
 int main(int, char const**)
